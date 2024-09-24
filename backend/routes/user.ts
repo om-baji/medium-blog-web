@@ -1,8 +1,9 @@
 import { Hono } from "hono";
 import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
-// import bcrypt from "bcrypt";
+import { hash,compare } from "bcryptjs";
 import { sign } from "hono/jwt";
+import { signupSchema,signinSchema } from "@ombaji124/common";
 
 const userRouter = new Hono<{
   Bindings: {
@@ -12,8 +13,13 @@ const userRouter = new Hono<{
 }>();
 
 userRouter.get("/signin", async (c) => {
+
   try {
     const { email, password } = await c.req.json();
+
+    const { success } = signinSchema.safeParse({email,password})
+
+    if(!success) return c.json({ message : "Invalid inputs!"},403)
 
     const prisma = new PrismaClient({
       datasourceUrl: c.env.DATABASE_URL,
@@ -33,9 +39,9 @@ userRouter.get("/signin", async (c) => {
 
     if (!user) return c.json({ message: "User doesnot exist" }, 403);
 
-    // const hash = await bcrypt.compare(password, user.password);
+    const isValid = await compare(password, user.password);
 
-    // if (!hash) return c.json({ message: "Wrong password" }, 403);
+    if (!isValid) return c.json({ message: "Wrong password" }, 403);
 
     const jwt = await sign(
       { id: user.id, name: user.name, email: user.email },
@@ -51,21 +57,27 @@ userRouter.get("/signin", async (c) => {
   }
 });
 
+
+
 userRouter.post("/signup", async (c) => {
   try {
     const { name, email, password } = await c.req.json();
+
+    const { success } = signupSchema.safeParse({name,email,password})
+
+    if(!success) return c.json({ message : "Invalid inputs!"})
 
     const prisma = new PrismaClient({
       datasourceUrl: c.env.DATABASE_URL,
     }).$extends(withAccelerate());
 
-    // const hashPass = await bcrypt.hash(password, 10);
+    const hashPass = await hash(password,10)
 
     const response = await prisma.user.create({
       data: {
         name,
         email,
-        password,
+        password : hashPass,
       },
     });
 
@@ -79,7 +91,9 @@ userRouter.post("/signup", async (c) => {
       token,
     });
   } catch (e: any) {
-    console.log("Error during sign-up:", e);
+    const data = await c.req.json()
+    console.log('Received data:', { data });
+    console.log("Error during sign-up:\n", e);
     return c.json({ message: "Internal Server Error" }, 500);
   }
 });
