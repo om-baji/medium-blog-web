@@ -12,7 +12,7 @@ const userRouter = new Hono<{
   };
 }>();
 
-userRouter.get("/signin", async (c) => {
+userRouter.post("/signin", async (c) => {
 
   try {
     const { email, password } = await c.req.json();
@@ -63,13 +63,21 @@ userRouter.post("/signup", async (c) => {
   try {
     const { name, email, password } = await c.req.json();
 
-    const { success } = signupSchema.safeParse({name,email,password})
+    // console.log(name,email,password)
 
-    if(!success) return c.json({ message : "Invalid inputs!"})
+    const { success,error } = signupSchema.safeParse({name,email,password})
+
+    if(!success) return c.json({ message : "Invalid inputs!", error}, 403)
 
     const prisma = new PrismaClient({
       datasourceUrl: c.env.DATABASE_URL,
     }).$extends(withAccelerate());
+
+    const isExist = await prisma.user.findUnique({
+      where : { email }
+    })
+
+    if(isExist) return c.json({ message : "User already exists"}, 403)
 
     const hashPass = await hash(password,10)
 

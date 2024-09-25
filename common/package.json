@@ -3,7 +3,7 @@
     "zod": "^3.23.8"
   },
   "name": "@ombaji124/common",
-  "version": "1.0.0",
+  "version": "1.1.1",
   "main": "dist/index.js",
   "devDependencies": {},
   "scripts": {

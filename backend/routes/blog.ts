@@ -10,12 +10,9 @@ const blogRouter = new Hono<{
   };
 }>();
 
-blogRouter.use("/blog/*", async (c, next) => {
+blogRouter.use("/post/*", async (c, next) => {
   try {
     const sentToken = c.req.header("authorization");
-
-    // console.log(sentToken?.split(" ")[1]);
-    
 
     const isValid = sentToken?.includes("Bearer") ? true : false;
 
@@ -28,9 +25,11 @@ blogRouter.use("/blog/*", async (c, next) => {
 
     const decoded = decode(token);
 
-    c.set("jwtPayload", decoded.payload);
-
     const response = await verify(token, c.env.JWT_SECRET);
+
+    if (!response) return c.json({ message: "Invalid user!" }, 403);
+
+    c.set("jwtPayload", decoded.payload);
 
     await next();
   } catch (e: any) {
@@ -38,41 +37,109 @@ blogRouter.use("/blog/*", async (c, next) => {
   }
 });
 
-blogRouter.post("/blog/create", async (c) => {
+blogRouter.post("/post/create", async (c) => {
   const client = new PrismaClient({
     datasourceUrl: c.env.DATABASE_URL,
   }).$extends(withAccelerate());
 
   const { title, content } = await c.req.json();
 
-  const { id,name } = c.get("jwtPayload");
-
+  const { id, name } = c.get("jwtPayload");
 
   const userExists = await client.user.findFirst({
-    where: { 
-      id
-     },
+    where: {
+      id,
+    },
   });
-  
 
   if (!userExists) {
-    return c.json({ message: "User does not exist" , id}, 404);
+    return c.json({ message: "User does not exist", id }, 404);
   }
 
   const response = await client.posts.create({
-    data : {
+    data: {
       title,
       content,
-      authorId : id,
-      publishedBy : name
-    }
-
-  })
+      authorId: id,
+      publishedBy: name,
+    },
+  });
 
   return c.json({
     message: "Posted Succesfully!",
-    response
+    response,
   });
+});
+
+blogRouter.get("/post/bulk", async (c) => {
+  try {
+    const client = new PrismaClient({
+      datasourceUrl: c.env.DATABASE_URL,
+    }).$extends(withAccelerate());
+
+    const response = await client.posts.findMany({});
+    console.log(response);
+    return c.json({
+      blogs : response
+    });
+  } catch (e) {
+    console.log(e);
+    c.json({
+      message: "Something went worng",
+    });
+  }
+});
+
+blogRouter.put("/post/:id", async (c) => {
+  try {
+    const client = new PrismaClient({
+      datasourceUrl: c.env.DATABASE_URL,
+    }).$extends(withAccelerate());
+
+    const { id } = await c.req.param();
+    const { title, content } = await c.req.json();
+
+    const update = await client.posts.update({
+      where: { id },
+      data: {
+        title,
+        content,
+      },
+    });
+
+    return c.json({
+      message : "Updated succesfully!",
+      update
+    });
+  } catch (e) {
+    console.log(e);
+    c.json({
+      message: "Something went worng",
+    },500);
+  }
+});
+
+blogRouter.get("/post/:id", async (c) => {
+  try {
+    const client = new PrismaClient({
+      datasourceUrl: c.env.DATABASE_URL,
+    }).$extends(withAccelerate());
+
+    const { id } = await c.req.param();
+
+    const post = await client.posts.findUnique({
+      where: { id },
+    });
+
+    return c.json({
+      post
+    });
+  } catch (e) {
+    console.log(e);
+    c.json({
+      message: "Something went worng",
+    },500);
+  }
 });
 
 export default blogRouter;

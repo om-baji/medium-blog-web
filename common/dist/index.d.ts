@@ -24,3 +24,14 @@ export declare const signupSchema: z.ZodObject<{
     name: string;
 }>;
 export type signupBody = z.infer<typeof signupSchema>;
+export declare const blogInputs: z.ZodObject<{
+    title: z.ZodString;
+    content: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    title: string;
+    content: string;
+}, {
+    title: string;
+    content: string;
+}>;
+export type blogTypes = z.infer<typeof blogInputs>;
