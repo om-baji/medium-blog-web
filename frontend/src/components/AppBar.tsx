@@ -20,7 +20,7 @@ function AppBar() {
       </div>
 
       <div className="w-full max-w-screen-xl mx-auto p-2 flex justify-evenly items-center">
-        <Link to="/" className="text-sm sm:text-base font-medium text-blue-600 hover:text-blue-700 transition-colors duration-300">
+        <Link to="/blog" className="text-sm sm:text-base font-medium text-blue-600 hover:text-blue-700 transition-colors duration-300">
           Home
         </Link>
         <a 
