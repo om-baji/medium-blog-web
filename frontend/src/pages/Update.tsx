@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { blogInputs, blogTypes } from "@ombaji124/common";
@@ -8,7 +8,7 @@ import FormInput from "../components/FormInput";
 import AppBar from "../components/AppBar";
 import Quote from "../components/Quote";
 import toast, { Toaster } from "react-hot-toast";
-import { useLoaderData, useLocation, useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 export default function Update() {
 
@@ -26,20 +26,6 @@ export default function Update() {
         formState: { errors, isSubmitting, isSubmitSuccessful },
     } = form;
 
-    // useEffect(() => {
-    //     const fetchBlogData = async () => {
-    //         try {
-    //             const response = await axios.get(`${BACKEND_URL}/api/v1/blog/post/${id}`);
-    //             const { title, content } = response.data;
-    //             console.log(response.data)
-    //             setValue("title", title);
-    //             setValue("content", content);
-    //         } catch (e) {
-    //             toast.error("Failed to fetch post data");
-    //         }
-    //     };
-    //     fetchBlogData();
-    // }, [id]);
 
     const onSubmit = async (data: blogTypes) => {
         try {
