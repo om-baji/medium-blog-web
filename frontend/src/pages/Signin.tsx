@@ -27,10 +27,11 @@ const Signin = () => {
         password
       });
 
-      const { token } = response.data;
+      const { token,author } = response.data;
 
       console.log(token);
       localStorage.setItem("token", token);
+      localStorage.setItem("author",author)
       navigate("/blog");
       toast.success("Login successful!");
 

@@ -50,6 +50,7 @@ userRouter.post("/signin", async (c) => {
 
     return c.json({
       token: jwt,
+      author : user.id
     });
   } catch (e) {
     console.log("Error during sign-in:", e);
@@ -97,6 +98,7 @@ userRouter.post("/signup", async (c) => {
     return c.json({
       message: "User created succesfully!",
       token,
+      author : response.id
     });
   } catch (e: any) {
     const data = await c.req.json()

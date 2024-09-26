@@ -9,6 +9,7 @@ interface Blog {
   content: string;
   publishedBy: string;
   id: string;
+  authorId: string;
 }
 
 const Blog = () => {
@@ -36,8 +37,10 @@ const Blog = () => {
           title: blog.title,
           content: blog.content,
           publishedBy: blog.publishedBy,
-          id: blog.id
+          id: blog.id,
+          authorId: blog.authorId
         }));
+
 
         setCombined(combinedData)
 
@@ -52,7 +55,15 @@ const Blog = () => {
     fetchData();
   }, []);
 
-  if (loading) return <div className="flex justify-center h-screen">loading...</div>
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen bg-gray-100">
+        <div className="text-2xl font-semibold text-gray-700 animate-pulse">
+          Loading...
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-gray-50 min-h-screen">
@@ -60,7 +71,7 @@ const Blog = () => {
       <div className="p-10 flex flex-col gap-8 max-w-screen-xl mx-auto">
         {combined.map((blog) => (
           <div
-            onClick={() => navigate(`/post?id=${blog.id}`)}
+            onClick={() => navigate(`/post?id=${blog.id}&auth=${blog.authorId}`)}
             key={blog.id}
             className="bg-white shadow-lg rounded-lg p-6 transition-transform transform hover:scale-105 hover:shadow-xl cursor-pointer border-l-4 border-blue-600 flex flex-col gap-4"
           >
@@ -70,7 +81,7 @@ const Blog = () => {
             <p className="text-gray-700 leading-relaxed">{blog.content.slice(0, 750)}...</p>
             <div className="flex items-center justify-between text-gray-500 text-sm mt-4">
               <span>Published by: <span className="font-medium text-gray-800">{blog.publishedBy}</span></span>
-              <span className="text-gray-400">{/* You can add a date here if available */}</span>
+              <span className="text-gray-400"></span>
             </div>
           </div>
         ))}

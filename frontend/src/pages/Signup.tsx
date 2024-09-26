@@ -31,6 +31,7 @@ const Signup = () => {
             
             console.log(response.data["token"]);
             localStorage.setItem("token", response.data["token"]);
+            localStorage.setItem("author",response.data["author"])
             navigate("/blog");
             toast.success("Registration successful!");
 

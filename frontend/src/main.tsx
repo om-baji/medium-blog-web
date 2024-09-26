@@ -8,6 +8,7 @@ import Signin from './pages/Signin.tsx'
 import Signup from './pages/Signup.tsx'
 import Create from './pages/Create.tsx'
 import Post from './pages/Post.tsx'
+import Update from './pages/Update.tsx'
 
 const router = createBrowserRouter([{
   path : "/",
@@ -27,6 +28,9 @@ const router = createBrowserRouter([{
 }, {
   path : "/post",
   element : <Post />
+}, {
+  path : "/update",
+  element : <Update />
 }])
 
 createRoot(document.getElementById('root')!).render(

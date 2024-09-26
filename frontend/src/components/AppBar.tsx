@@ -12,6 +12,16 @@ function AppBar() {
                     </Link>
                 </div>
                 <div className="flex items-center justify-end gap-4">
+                    <Link to="/">
+                        <button className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition duration-300 shadow-md">
+                            Home
+                        </button>
+                    </Link>
+                    <Link to="/signin">
+                        <button className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition duration-300 shadow-md">
+                            Log Out
+                        </button>
+                    </Link>
                     <Link to="/create">
                         <button className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition duration-300 shadow-md">
                             Publish

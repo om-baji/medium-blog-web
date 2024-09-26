@@ -1,5 +1,5 @@
 interface buttonInput {
-    label : string;
+    label? : string;
     className? : string;
     onChange? : () => void;
     onClick : () => void;
