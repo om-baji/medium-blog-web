@@ -16,7 +16,6 @@ const Blog = () => {
   const [combined, setCombined] = useState<Blog[]>([]);
   const [loading, setLoading] = useState(true)
   const authHeader = `Bearer ${localStorage.getItem("token")}`;
-  const token = localStorage.getItem("token")
 
   const navigate = useNavigate()
 

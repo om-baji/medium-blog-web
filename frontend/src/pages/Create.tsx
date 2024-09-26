@@ -6,7 +6,7 @@ import { BACKEND_URL } from "../config";
 import FormInput from "../components/FormInput";
 import AppBar from "../components/AppBar";
 import Quote from "../components/Quote";
-import toast, { Toaster } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 
 
 export default function Create() {
