@@ -16,6 +16,7 @@ function AppBar() {
           <button
             className="sm:hidden text-lg font-bold focus:outline-none"
             onClick={() => setMenuOpen(!menuOpen)}
+            onTouchEnd={() => setMenuOpen(!menuOpen)}
           >
             {menuOpen ? "Close" : "Menu"}
           </button>
