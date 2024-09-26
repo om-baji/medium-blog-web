@@ -7,10 +7,12 @@ import FormInput from "../components/FormInput";
 import AppBar from "../components/AppBar";
 import Quote from "../components/Quote";
 import { Toaster } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 
 export default function Create() {
 
+    const navigate = useNavigate()
 
     const form = useForm<blogTypes>({
         resolver: zodResolver(blogInputs)
@@ -30,6 +32,7 @@ export default function Create() {
                 }
             })
             console.log(response)
+            navigate("/blog")
         } catch (e) {
             console.log(e)
         }

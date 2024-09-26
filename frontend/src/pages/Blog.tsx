@@ -14,41 +14,37 @@ interface Blog {
 
 const Blog = () => {
   const [combined, setCombined] = useState<Blog[]>([]);
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true);
   const authHeader = `Bearer ${localStorage.getItem("token")}`;
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true)
+      setLoading(true);
       try {
-
         const response = await axios.get(`${BACKEND_URL}/api/v1/blog/post/bulk`, {
           headers: {
             Authorization: authHeader,
           },
         });
 
-        const arr = response.data.blogs
+        const arr = response.data.blogs;
 
         const combinedData = arr.map((blog: Blog) => ({
           title: blog.title,
           content: blog.content,
           publishedBy: blog.publishedBy,
           id: blog.id,
-          authorId: blog.authorId
+          authorId: blog.authorId,
         }));
 
-
-        setCombined(combinedData)
-
+        setCombined(combinedData);
       } catch (e) {
         console.log("Error", e);
       } finally {
-        setLoading(false)
+        setLoading(false);
         console.log(combined);
-
       }
     };
     fetchData();
@@ -67,28 +63,29 @@ const Blog = () => {
   return (
     <div className="bg-gray-50 min-h-screen">
       <AppBar />
-      <div className="p-10 flex flex-col gap-8 max-w-screen-xl mx-auto">
+      <div className="p-4 sm:p-6 md:p-10 flex flex-col gap-6 md:gap-8 max-w-screen-xl mx-auto">
         {combined.map((blog) => (
           <div
             onClick={() => navigate(`/post?id=${blog.id}&auth=${blog.authorId}`)}
             key={blog.id}
-            className="bg-white shadow-lg rounded-lg p-6 transition-transform transform hover:scale-105 hover:shadow-xl cursor-pointer border-l-4 border-blue-600 flex flex-col gap-4"
+            className="bg-white shadow-lg rounded-lg p-4 sm:p-6 transition-transform transform hover:scale-105 hover:shadow-xl cursor-pointer border-l-4 border-blue-600 flex flex-col gap-2 sm:gap-4"
           >
-            <h2 className="text-2xl font-bold text-gray-900 mb-2 hover:text-blue-600 transition-colors duration-300">
+            <h2 className="text-lg sm:text-2xl font-bold text-gray-900 mb-1 sm:mb-2 hover:text-blue-600 transition-colors duration-300">
               {blog.title}
             </h2>
-            <p className="text-gray-700 leading-relaxed">{blog.content.slice(0, 750)}...</p>
-            <div className="flex items-center justify-between text-gray-500 text-sm mt-4">
-              <span>Published by: <span className="font-medium text-gray-800">{blog.publishedBy}</span></span>
-              <span className="text-gray-400"></span>
+            <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
+              {blog.content.slice(0, 750)}...
+            </p>
+            <div className="flex items-center justify-between text-gray-500 text-xs sm:text-sm mt-2 sm:mt-4">
+              <span>
+                Published by:{" "}
+                <span className="font-medium text-gray-800">{blog.publishedBy}</span>
+              </span>
             </div>
           </div>
         ))}
       </div>
     </div>
-
-
-
   );
 };
 

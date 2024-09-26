@@ -2,42 +2,42 @@ import { useForm } from "react-hook-form";
 import Quote from "../components/Quote";
 import FormInput from "../components/FormInput";
 import { signinBody, signinSchema } from "@ombaji124/common";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { BACKEND_URL } from "../config";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 
 const Signin = () => {
   const navigate = useNavigate();
 
   const form = useForm<signinBody>({
-    resolver: zodResolver(signinSchema)
+    resolver: zodResolver(signinSchema),
   });
   const { register, formState: { isSubmitting, isSubmitSuccessful, errors }, handleSubmit } = form;
 
   const onSubmit = async (data: signinBody) => {
-    console.log(data);
-
     try {
       const { email, password } = data;
       const response = await axios.post(`${BACKEND_URL}/api/v1/user/signin`, {
         email,
-        password
+        password,
       });
 
-      const { token,author } = response.data;
-
-      console.log(token);
+      const { token, author } = response.data;
       localStorage.setItem("token", token);
-      localStorage.setItem("author",author)
+      localStorage.setItem("author", author);
       navigate("/blog");
-      toast.success("Login successful!");
-
+      toast.success("Login successful!", {
+        position: "top-center",
+        duration: 4000,
+      });
     } catch (error) {
       console.error(error);
-      toast.error("Login failed. Please check your credentials.");
+      toast.error("Login failed. Please check your credentials.", {
+        position: "top-center",
+        duration: 4000,
+      });
     }
   };
 
@@ -71,7 +71,6 @@ const Signin = () => {
                 {errors.password.message}
               </p>
             )}
-
             <div className="mt-6">
               <button
                 disabled={isSubmitting}
